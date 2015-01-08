@@ -1,5 +1,6 @@
 <?php
 namespace Formery;
+require 'inc/formery/attribute_helper.php';
 
 class Form {
 	public $method = 'post';
@@ -18,15 +19,6 @@ label, input[type~=submit] {display: block;}
 EOS1;
 	}
 
-	private static function attrib_if_set($attrib, $val, $echo=FALSE) {
-		if (isset($attrib) && $attrib!=null && ($attrib=trim($attrib))!='')
-		if (isset($val) && $val!=null && ($val=trim($val))!='') {
-			$retval = " $attrib=\"$val\"";
-			if ($echo) echo $retval;
-			else return $retval;
-		}
-	}
-	
 	private function field($field_spec, $echo=FALSE) {
 		if (strpos($field_spec, '::') !== FALSE) {
 			$tmp_arr = explode('::', $field_spec);
@@ -65,10 +57,10 @@ EOS1;
 			$retval = ''
 				.($this->show_label?'<label>'.($placeholder==NULL?$name:$placeholder).'</label>':'')
 				.'<input type="text"'
-				.Form::attrib_if_set('name', $name)
-				.Form::attrib_if_set('type', $type)
-				.Form::attrib_if_set('value', $default)
-				.($this->show_placeholder?Form::attrib_if_set('placeholder', $placeholder):'')
+				.AttributeHelper::attrib_if_set('name', $name)
+				.AttributeHelper::attrib_if_set('type', $type)
+				.AttributeHelper::attrib_if_set('value', $default)
+				.($this->show_placeholder?AttributeHelper::attrib_if_set('placeholder', $placeholder):'')
 				.'>'.PHP_EOL;
 		}
 		
@@ -79,9 +71,9 @@ EOS1;
 	public function generate($echo=FALSE) {
 		$cssclass = is_array($this->form_cssclass) ? implode(' ', $this->form_cssclass) : $this->form_cssclass;
 		$mkup = '<form'
-			.Form::attrib_if_set('method', $this->method)
-			.Form::attrib_if_set('action', $this->action)
-			.Form::attrib_if_set('class', $cssclass)
+			.AttributeHelper::attrib_if_set('method', $this->method)
+			.AttributeHelper::attrib_if_set('action', $this->action)
+			.AttributeHelper::attrib_if_set('class', $cssclass)
 			.'>'.PHP_EOL;
 		foreach($this->fields as $iter_field) {
 			$mkup .= $this->field($iter_field);
